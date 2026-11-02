@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View One Event</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f4f9;
+            color: #202744;
+        }
+
+        header {
+            background: #202744;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .banner {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 30px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px #00000015;
+        }
+
+        h2 {
+            color: #3949ab;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+        }
+
+        button, .btn {
+            display: inline-block;
+            background: #3949ab;
+            color: white;
+            padding: 11px 18px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            margin: 5px 5px 5px 0;
+        }
+
+        .details {
+            margin-top: 20px;
+        }
+
+        .details p {
+            padding: 12px;
+            background: #f1f4f9;
+            border-radius: 6px;
+            overflow-wrap: anywhere;
+        }
+
+        #message {
+            color: #b42318;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>College Event Management</h1>
+    <p>Find Event Details</p>
+</header>
+
+<img
+    class="banner"
+    src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1400&q=80"
+    alt="College conference">
+
+<div class="container">
+
+    <h2>View One Event</h2>
+
+    <form id="searchForm">
+        <label for="event_id">Enter Event ID</label>
+
+        <input
+            type="number"
+            id="event_id"
+            min="1"
+            placeholder="Enter event ID"
+            required>
+
+        <button type="submit">Search Event</button>
+    </form>
+
+    <p id="message"></p>
+
+    <div class="details" id="details" hidden>
+        <h3>Event Details</h3>
+        <p><strong>Event ID:</strong> <span id="id"></span></p>
+        <p><strong>Event Name:</strong> <span id="name"></span></p>
+        <p><strong>Event Time:</strong> <span id="time"></span></p>
+        <p><strong>Event Day:</strong> <span id="day"></span></p>
+        <p><strong>Event Venue:</strong> <span id="venue"></span></p>
+        <p><strong>Description:</strong> <span id="description"></span></p>
+    </div>
+
+    <a href="index.html" class="btn">Home</a>
+    <a href="list.html" class="btn">All Events</a>
+
+</div>
+
+<script>
+document.getElementById("searchForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const id = document.getElementById("event_id").value;
+    const message = document.getElementById("message");
+    const details = document.getElementById("details");
+
+    details.hidden = true;
+    message.textContent = "Searching...";
+
+    try {
+        const response = await fetch("/events/" + encodeURIComponent(id));
+        const event = await response.json();
+
+        if (!response.ok) {
+            message.textContent = event.message || "Event not found";
+            return;
+        }
+
+        document.getElementById("id").textContent = event.event_id;
+        document.getElementById("name").textContent = event.event_name;
+        document.getElementById("time").textContent = event.event_time || "";
+        document.getElementById("day").textContent = event.event_day || "";
+        document.getElementById("venue").textContent = event.event_venue || "";
+        document.getElementById("description").textContent =
+            event.event_description || "";
+
+        message.textContent = "";
+        details.hidden = false;
+
+    } catch (error) {
+        message.textContent = "Server connection failed. Check app.js.";
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Event Management</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f8;
+        }
+
+        .hero {
+            min-height: 100vh;
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.55),
+                                rgba(0, 0, 0, 0.55)),
+                url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1600&q=85");
+
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 25px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 18px;
+        }
+
+        p {
+            font-size: 19px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .buttons a {
+            background: #ffb703;
+            color: #202744;
+            padding: 13px 22px;
+            text-decoration: none;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        .buttons a:hover {
+            background: white;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 32px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="hero">
+
+        <h1>College Event Management</h1>
+
+        <p>
+            Discover, Organize and Manage
+            Your College Events in One Place!
+        </p>
+
+        <div class="buttons">
+            <a href="insert.html">Add Event</a>
+            <a href="list.html">View Events</a>
+            <a href="listone.html">Find Event</a>
+            <a href="update.html">Update Event</a>
+            <a href="delete.html">Delete Event</a>
+        </div>
+
+    </section>
+
+</body>
+</html>

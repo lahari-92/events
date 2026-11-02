@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert Event</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fc;
+            margin: 0;
+            color: #17345f;
+        }
+
+        header {
+            background: #102e60;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: white;
+        }
+
+        nav {
+            margin-top: 15px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 8px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 35px auto;
+            padding: 28px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 5px 22px #17345f18;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd5e4;
+            border-radius: 7px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 22px;
+            border: none;
+            border-radius: 7px;
+            background: #176fff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #075bc9;
+        }
+
+        #message {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 18px;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #176fff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 College Event Management</h1>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="insert.html">Insert Event</a>
+        <a href="list.html">List Events</a>
+        <a href="listOne.html">List One</a>
+        <a href="update.html">Update</a>
+        <a href="delete.html">Delete</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <h2>➕ Add New Event</h2>
+
+    <form id="eventForm">
+
+        <label for="event_name">Event Name</label>
+        <input type="text" id="event_name"
+               placeholder="Enter event name" required>
+
+        <label for="event_time">Event Time</label>
+        <input type="time" id="event_time" required>
+
+        <label for="event_day">Event Day</label>
+        <input type="day" id="event_day" required>
+
+        <label for="event_venue">Event Venue</label>
+        <input type="text" id="event_venue"
+               placeholder="Enter event venue" required>
+
+        <label for="event_description">Event Description</label>
+        <textarea id="event_description" rows="4"
+                  placeholder="Enter event description"></textarea>
+
+        <button type="submit">Save Event</button>
+
+    </form>
+
+    <p id="message"></p>
+
+    <a href="index.html" class="back">← Back to Home</a>
+
+</div>
+
+<script>
+    const form = document.getElementById("eventForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const eventData = {
+            event_name: document.getElementById("event_name").value.trim(),
+            event_time: document.getElementById("event_time").value,
+            event_day: document.getElementById("event_day").value,
+            event_venue: document.getElementById("event_venue").value.trim(),
+            event_description:
+                document.getElementById("event_description").value.trim()
+        };
+
+        try {
+            const response = await fetch("/events", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(eventData)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    result.message || result.error || "Unable to save event"
+                );
+            }
+
+            message.style.color = "green";
+            message.textContent =
+                "Event added successfully! Event ID: " + result.event_id;
+
+            form.reset();
+
+        } catch (error) {
+            message.style.color = "red";
+            message.textContent = error.message;
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update College Event</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f4f9;
+            color: #202744;
+        }
+
+        header {
+            background: #202744;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .banner {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px #00000015;
+        }
+
+        h2 {
+            color: #3949ab;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px;
+            margin-top: 7px;
+            border: 1px solid #cbd0dc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button, .btn {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 12px 18px;
+            background: #3949ab;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #editForm {
+            margin-top: 20px;
+        }
+
+        #message {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>College Event Management</h1>
+    <p>Update Existing Event</p>
+</header>
+
+<img
+    class="banner"
+    src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1400&q=80"
+    alt="College event">
+
+<div class="container">
+
+    <h2>Update Event Details</h2>
+
+    <form id="searchForm">
+        <label for="searchId">Enter Event ID</label>
+        <input type="number" id="searchId" min="1" required
+               placeholder="Enter existing event ID">
+        <button type="submit">Load Event</button>
+    </form>
+
+    <p id="message"></p>
+
+    <form id="editForm" hidden>
+
+        <label>Event Name</label>
+        <input type="text" name="event_name" required>
+
+        <label>Event Time</label>
+        <input type="time" name="event_time" required>
+
+        <label>Event Day</label>
+        <select name="event_day" required>
+            <option value="">Select day</option>
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+            <option>Sunday</option>
+        </select>
+
+        <label>Event Venue</label>
+        <input type="text" name="event_venue" required>
+
+        <label>Event Description</label>
+        <textarea name="event_description" rows="4"></textarea>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <a href="index.html" class="btn">Home</a>
+    <a href="list.html" class="btn">All Events</a>
+
+</div>
+
+<script>
+const searchForm = document.getElementById("searchForm");
+const editForm = document.getElementById("editForm");
+const message = document.getElementById("message");
+
+let currentId = null;
+
+searchForm.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    currentId = document.getElementById("searchId").value;
+    editForm.hidden = true;
+    message.textContent = "Loading event...";
+
+    try {
+        const response = await fetch("/events/" + encodeURIComponent(currentId));
+        const event = await response.json();
+
+        if (!response.ok) {
+            message.textContent = event.message || "Event not found";
+            return;
+        }
+
+        editForm.elements["event_name"].value = event.event_name || "";
+        editForm.elements["event_time"].value =
+            event.event_time ? String(event.event_time).slice(0, 5) : "";
+        editForm.elements["event_day"].value = event.event_day || "";
+        editForm.elements["event_venue"].value = event.event_venue || "";
+        editForm.elements["event_description"].value =
+            event.event_description || "";
+
+        message.textContent = "Event loaded. Edit the details below.";
+        editForm.hidden = false;
+
+    } catch (error) {
+        message.textContent = "Server connection failed.";
+    }
+});
+
+editForm.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const data = Object.fromEntries(new FormData(editForm).entries());
+
+    try {
+        const response = await fetch("/events/" + encodeURIComponent(currentId), {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            message.textContent = "Event updated successfully!";
+        } else {
+            message.textContent = result.message || result.error || "Update failed";
+        }
+
+    } catch (error) {
+        message.textContent = "Server connection failed.";
+    }
+});
+</script>
+
+</body>
+</html>
